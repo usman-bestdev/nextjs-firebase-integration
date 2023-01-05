@@ -1,13 +1,99 @@
-import { Html, Head, Main, NextScript } from 'next/document'
+import React from "react";
+import Document, { Head, Html, Main, NextScript } from "next/document";
+import { ServerStyleSheets } from "@material-ui/core/styles";
+import defaultTheme from "../theme/defaultTheme";
 
-export default function Document() {
-  return (
-    <Html lang="en">
-      <Head />
-      <body>
-        <Main />
-        <NextScript />
-      </body>
-    </Html>
-  )
+export default class MyDocument extends Document {
+  render() {
+    return (
+      <Html lang="en">
+        <Head>
+          {/* PWA primary color */}
+          <meta
+            name="theme-color"
+            content={defaultTheme.palette.primary.main}
+          />
+          <meta
+            name="keywords"
+            content="Responsive, HTML5, admin theme, business, professional, React, web design, CSS3, JSS"
+          />
+
+          <meta name="msapplication-TileColor" content="#6200EE" />
+          <meta name="msapplication-TileImage" content="/logo512.png" />
+          <meta name="theme-color" content="#6200EE" />
+          <meta
+            name="description"
+            content="Web site created using create-react-app"
+          />
+          <meta
+            property="og:description"
+            content="Web site created using create-react-appn"
+          />
+          <meta property="og:title" content="firebase integration" />
+          <meta property="og:image" content="/logo512.png" />
+          <meta property="og:site_name" content="firebase integration" />
+          <meta name="keywords" content="react,react-component,stickies" />
+          <meta name="twitter:card" content="summary" />
+          <meta
+            name="twitter:title"
+            content="DevOps - Smart Solutions For Web"
+          />
+          <meta
+            name="twitter:description"
+            content="DevOps - Smart Solutions For Web"
+          />
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
 }
+
+// `getInitialProps` belongs to `_document` (instead of `_app`),
+// it's compatible with server-side generation (SSG).
+MyDocument.getInitialProps = async (ctx) => {
+  // Resolution order
+  //
+  // On the server:
+  // 1. apps.getInitialProps
+  // 2. page.getInitialProps
+  // 3. document.getInitialProps
+  // 4. apps.render
+  // 5. page.render
+  // 6. document.render
+  //
+  // On the server with error:
+  // 1. document.getInitialProps
+  // 2. apps.render
+  // 3. page.render
+  // 4. document.render
+  //
+  // On the client
+  // 1. apps.getInitialProps
+  // 2. page.getInitialProps
+  // 3. apps.render
+  // 4. page.render
+
+  // Render apps and page and get the context of the page with collected side effects.
+  const sheets = new ServerStyleSheets();
+  const originalRenderPage = ctx.renderPage;
+
+  ctx.renderPage = () =>
+    originalRenderPage({
+      enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
+    });
+
+  const initialProps = await Document.getInitialProps(ctx);
+
+  return {
+    ...initialProps,
+    // Styles fragment is rendered after the apps and page rendering finish.
+    styles: [
+      ...React.Children.toArray(initialProps.styles),
+      sheets.getStyleElement(),
+    ],
+  };
+};
