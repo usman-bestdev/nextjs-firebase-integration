@@ -1,10 +1,12 @@
-import * as React from "react";
 import SignUp from "../components/signUp";
+import AuthPage from "../authentication/auth-page-wrappers/AuthPage";
 
 function SignUpPage() {
   return (
     <>
-      <SignUp />
+      <AuthPage>
+        <SignUp />
+      </AuthPage>
     </>
   );
 }

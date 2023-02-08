@@ -46,7 +46,6 @@ export const useProvideAuth = () => {
     email: string,
     password: string
   ) => {
-    console.log(username, email, password);
     createUserWithEmailAndPassword(auth, email, password)
       .then(async () => {
         setAuthUser(true);
